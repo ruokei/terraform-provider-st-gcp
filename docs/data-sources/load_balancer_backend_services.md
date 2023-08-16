@@ -28,12 +28,22 @@ data "st-gcp_load_balancer_backend_services" "def" {
 
 ### Optional
 
+- `client_config` (Block, Optional) Config to override default client created in Provider. This block will not be recorded in state file. (see [below for nested schema](#nestedblock--client_config))
 - `name` (String) Name of backend service to be filtered.
 - `tags` (Map of String) Tags of backend service to be filtered.
 
 ### Read-Only
 
 - `items` (Attributes List) List of queried load balancer backend services. (see [below for nested schema](#nestedatt--items))
+
+<a id="nestedblock--client_config"></a>
+### Nested Schema for `client_config`
+
+Optional:
+
+- `credentials` (String, Sensitive) The credentials of service account in JSON format  Default to use credentials configured in the provider.
+- `project` (String) Project Name for Google Cloud API. Default to use project configured in the provider.
+
 
 <a id="nestedatt--items"></a>
 ### Nested Schema for `items`

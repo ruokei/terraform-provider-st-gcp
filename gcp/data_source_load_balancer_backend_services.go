@@ -12,6 +12,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
 	googleComputeClient "google.golang.org/api/compute/v1"
+	"google.golang.org/api/option"
 )
 
 var (
@@ -29,14 +30,20 @@ type LbBackendServicesDataSource struct {
 }
 
 type LbBackendServicesDataSourceModel struct {
-	Name  types.String                `tfsdk:"name"`
-	Tags  types.Map                   `tfsdk:"tags"`
-	Items []*lbBackendServicesItemModel `tfsdk:"items"`
+	ClientConfig *clientConfig                 `tfsdk:"client_config"`
+	Name         types.String                  `tfsdk:"name"`
+	Tags         types.Map                     `tfsdk:"tags"`
+	Items        []*lbBackendServicesItemModel `tfsdk:"items"`
 }
 
 type lbBackendServicesItemModel struct {
 	Id   types.Int64 `tfsdk:"id"`
 	Tags types.Map   `tfsdk:"tags"`
+}
+
+type clientConfig struct {
+	Project     types.String `tfsdk:"project"`
+	Credentials types.String `tfsdk:"credentials"`
 }
 
 // Metadata returns the data source backend services type name.
@@ -76,6 +83,25 @@ func (d *LbBackendServicesDataSource) Schema(_ context.Context, req datasource.S
 				},
 			},
 		},
+		Blocks: map[string]schema.Block{
+			"client_config": schema.SingleNestedBlock{
+				Description: "Config to override default client created in Provider. " +
+					"This block will not be recorded in state file.",
+				Attributes: map[string]schema.Attribute{
+					"project": schema.StringAttribute{
+						Description: "Project Name for Google Cloud API. Default " +
+							"to use project configured in the provider.",
+						Optional: true,
+					},
+					"credentials": schema.StringAttribute{
+						Description: "The credentials of service account in JSON format " +
+							" Default to use credentials configured in the provider.",
+						Optional:  true,
+						Sensitive: true,
+					},
+				},
+			},
+		},
 	}
 }
 
@@ -96,6 +122,36 @@ func (d *LbBackendServicesDataSource) Read(ctx context.Context, req datasource.R
 	resp.Diagnostics.Append(diags...)
 	if resp.Diagnostics.HasError() {
 		return
+	}
+
+	if plan.ClientConfig == nil {
+		plan.ClientConfig = &clientConfig{}
+	}
+
+	initClient := false
+	project := plan.ClientConfig.Project.ValueString()
+	credentials := plan.ClientConfig.Credentials.ValueString()
+	if project != "" || credentials != "" {
+		initClient = true
+	}
+
+	if initClient {
+		if project != "" {
+			d.project = project
+		}
+		if credentials != "" {
+			googleClientOption := option.WithCredentialsJSON([]byte(credentials))
+			var err error
+			d.client, err = googleComputeClient.NewService(ctx, googleClientOption)
+			if err != nil {
+				resp.Diagnostics.AddError(
+					"[API ERROR] Failed to Reinitialize Google Cloud client",
+					"Please make sure the credentials is valid.\n"+
+						"Additional error message: "+err.Error(),
+				)
+				return
+			}
+		}
 	}
 
 	// Initialize input into state

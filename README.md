@@ -46,11 +46,12 @@ The reason behind every resources and data sources are stated as below:
 
 - **st-gcp_load_balancer_backend_services**
 
-  The load balancer backend services on Google Cloud do not support tagging, therefore
-  backend service's description is used as tags with the format
-  `TagKey1:TagValue1|TagKey2:TagValue2`, where the character `|` is used as string
-  delimiter. Output will also convert description string to map if all are matched.
+  - The load balancer backend services on Google Cloud do not support tagging, therefore
+    backend service's description is used as tags with the format
+    `TagKey1:TagValue1|TagKey2:TagValue2`, where the character `|` is used as string
+    delimiter. Output will also convert description string to map if all are matched.
 
+  - Added client_config block to allow overriding the Provider configuration.
 
 References
 ----------
