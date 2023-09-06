@@ -9,11 +9,9 @@ terraform {
 
 provider "st-gcp" {}
 
-data "st-gcp_load_balancer_backend_services" "def" {
-  name = "backend-service-name"
+resource "st-gcp_acme_eab" "eab" {
+}
 
-  tags = {
-    env = "test"
-    app = "crond"
-  }
+output "eab" {
+  value = st-gcp_acme_eab.eab
 }

@@ -5,6 +5,7 @@ import (
 	"os"
 
 	"github.com/hashicorp/terraform-plugin-framework/providerserver"
+
 	"github.com/myklst/terraform-provider-st-gcp/gcp"
 )
 
@@ -16,7 +17,7 @@ func main() {
 	if providerAddress == "" {
 		providerAddress = "registry.terraform.io/myklst/st-gcp"
 	}
-	providerserver.Serve(context.Background(), gcp.New, providerserver.ServeOpts{
+	_ = providerserver.Serve(context.Background(), gcp.New, providerserver.ServeOpts{
 		Address: providerAddress,
 	})
 }

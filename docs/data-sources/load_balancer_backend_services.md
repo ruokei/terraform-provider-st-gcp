@@ -13,6 +13,17 @@ This data source provides the load balancer backend services on Google Cloud.
 ## Example Usage
 
 ```terraform
+terraform {
+  required_providers {
+    st-gcp = {
+      source  = "myklst/st-gcp"
+      version = "~> 0.1"
+    }
+  }
+}
+
+provider "st-gcp" {}
+
 data "st-gcp_load_balancer_backend_services" "def" {
   name = "backend-service-name"
 
@@ -52,5 +63,3 @@ Read-Only:
 
 - `id` (Number) ID of backend service.
 - `tags` (Map of String) Tags of backend service.
-
-

@@ -12,3 +12,13 @@ install-local-custom-provider:
 	mkdir -p  $$HOME_DIR/.terraform.d/plugins/$(CUSTOM_PROVIDER_URL)/0.1.0/linux_amd64/; \
 	cp $$GO_INSTALL_PATH/$(CUSTOM_PROVIDER_NAME) $$HOME_DIR/.terraform.d/plugins/$(CUSTOM_PROVIDER_URL)/0.1.0/linux_amd64/$(CUSTOM_PROVIDER_NAME)
 	unset PROVIDER_LOCAL_PATH
+
+.PHONY: generate-terraform-document
+generate-terraform-document:
+	go generate ./...
+
+go-fmt:
+	goimports -l -w -local "github.com/myklst/terraform-provider-st-gcp/" .
+
+go-lint:
+	golangci-lint run

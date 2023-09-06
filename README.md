@@ -53,6 +53,39 @@ The reason behind every resources and data sources are stated as below:
 
   - Added client_config block to allow overriding the Provider configuration.
 
+### Resource
+
+- **st-gcp_acme_eab**
+
+  To create [EAB](https://docs.digicert.com/en/trust-lifecycle-manager/integration-guides/third-party-acme-integration/acme-external-account-binding--eab-.html) credential for ACME protocol.
+
+  > ACME EAB credentials
+  >
+  > The ACME protocol (RFC 8555) defines an external account binding (EAB) field
+  > that ACME clients can use to access a specific account on the certificate
+  > authority (CA).
+  >
+  > DigiCert​​®​​’s ACME implementation uses the EAB field to identify both your
+  > DigiCert​​®​​ Trust Lifecycle Manager account and a specific certificate profile
+  > there.
+  >
+  > Your ACME client must send the following EAB credentials to request certificates:
+  >
+  > * **Key identifier (KID)**
+  >
+  >    Identifies your DigiCert ONE account and the automation profile for certificate issuance.
+  >
+  > * **HMAC key**
+  >
+  >    Used to encrypt and authenticate your account key during automation events.
+
+  See:
+    - [ACME EAB - What Is It, and How Do We Use It at Smallstep?](https://smallstep.com/blog/acme-eab-overview/)
+    - [Google OAuth2 Doc](https://developers.google.com/identity/protocols/oauth2/service-account)
+    - [Google Public CA Doc](https://cloud.google.com/certificate-manager/docs/reference/rest/v1beta1/projects.locations.externalAccountKeys/create)
+    - [example: examples/resources/st-gcp_acme_eab/resource.tf](examples/resources/st-gcp_acme_eab/resource.tf)
+    - Work with [Terraform ACME Certificate and Account Provider](https://registry.terraform.io/providers/vancluever/acme/latest/docs)
+
 References
 ----------
 
