@@ -190,7 +190,6 @@ func createEabCred(ctx context.Context, s *acmeEabState, credentialsJSON []byte,
 		} else {
 			resp, err = conf.Client(context.Background()).Post(api, "application/json", nil)
 		}
-		defer resp.Body.Close()
 
 		if err != nil {
 			errMsg := err.Error()
@@ -218,6 +217,8 @@ func createEabCred(ctx context.Context, s *acmeEabState, credentialsJSON []byte,
 	if resp.StatusCode != http.StatusOK {
 		return fmt.Errorf("url:" + api + ", error:" + string(body))
 	}
+
+	resp.Body.Close()
 
 	var eab externalAccountKeyResp
 	if err = json.Unmarshal(body, &eab); err != nil {
